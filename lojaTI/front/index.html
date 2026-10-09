@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Clientes</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Cadastro de Clientes</h1>
+        <p>Cadastre e consulte seus clientes</p>
+    </header>
+
+    <main>
+
+        <section class="cadastro">
+            <h2>Novo Cliente</h2>
+
+            <form action="../back/index.php?rota=adicionarclientes" method="POST">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" required>
+
+                <label for="endereco">Endereço:</label>
+                <input type="text" id="endereco" name="endereco" required>
+
+                <button type="submit">Cadastrar Cliente</button>
+
+            </form>
+        </section>
+
+        <section class="lista">
+            <h2>Clientes Cadastrados</h2>
+
+            <button onclick="listarClientes()">Ver Clientes</button>
+
+            <div class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Endereço</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="clientes">
+                        <tr>
+                            <td colspan="5">Clique em "Ver Clientes"</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Sistema de Cadastro de Clientes</p>
+    </footer>
+
+    <script>
+        async function listarClientes() {
+            const tabela = document.getElementById("clientes");
+
+            try {
+                const resposta = await fetch("../back/index.php?rota=clientes");
+                const dados = await resposta.json();
+
+                tabela.innerHTML = "";
+
+                dados.forEach(cliente => {
+                    tabela.innerHTML += `
+                        <tr>
+                            <td>${cliente.id_cliente ?? cliente.id ?? ""}</td>
+                            <td>${cliente.Nome ?? cliente.nome ?? ""}</td>
+                            <td>${cliente.Email ?? cliente.email ?? ""}</td>
+                            <td>${cliente.Telefone ?? cliente.telefone ?? ""}</td>
+                            <td>${cliente.Endereco ?? cliente.endereco ?? ""}</td>
+                        </tr>
+                    `;
+                });
+
+                if (dados.length === 0) {
+                    tabela.innerHTML = '<tr><td colspan="5">Nenhum cliente cadastrado.</td></tr>';
+                }
+
+            } catch (erro) {
+                tabela.innerHTML = '<tr><td colspan="5">Erro ao carregar clientes.</td></tr>';
+            }
+        }
+    </script>
+
+</body>
+</html>
+```
